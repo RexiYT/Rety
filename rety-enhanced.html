@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Rety</title>
+  <style>
+/* ================================================
+   RETY — style.css
+   ================================================ */
+
+:root {
+  --bg:        #0a0a0f;
+  --surface:   #0e0e18;
+  --surface2:  #13131c;
+  --surface3:  #1c1c2e;
+  --accent:    #7c5cfc;
+  --accent2:   #fc5c7d;
+  --accent3:   #5cf0c4;
+  --text:      #f0eeff;
+  --muted:     #5a5880;
+  --border:    rgba(124, 92, 252, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: #06060d;
+}
+
+/* ---- APP SHELL ---- */
+#app {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  height: 100vh;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* On desktop, show as a phone card */
+@media (min-width: 480px) {
+  body { align-items: center; padding: 24px 0; }
+  #app {
+    height: 820px;
+    min-height: unset;
+    border-radius: 40px;
+    border: 2px solid #2a2a40;
+    box-shadow: 0 0 0 6px #11111e, 0 32px 80px rgba(0,0,0,0.7);
+  }
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(124,92,252,0.3); border-radius: 2px; }
+
+/* ---- STATUS BAR ---- */
+.status-bar {
+  height: 26px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.status-time {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.status-icons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.sig-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent3);
+}
+
+.sig-bar {
+  width: 12px; height: 8px;
+  background: var(--text);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+/* ---- HEADER ---- */
+.app-header {
+  padding: 6px 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-svg {
+  width: 28px;
+  height: 28px;
+}
+
+.logo-txt {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #7c5cfc, #fc5c7d, #5cf0c4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.hdr-av {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ---- SCREENS ---- */
+.screens {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.22s;
+}
+
+.screen.hidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.screen.slide-left {
+  transform: translateX(-30%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- BOTTOM NAV ---- */
+.bottom-nav {
+  height: 60px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  padding-bottom: 4px;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  transition: all 0.15s;
+}
+
+.nav-btn.active { background: rgba(124,92,252,0.12); }
+.nav-icon { font-size: 18px; color: var(--muted); transition: color 0.15s; }
+.nav-lbl  { font-size: 9px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; transition: color 0.15s; }
+.nav-btn.active .nav-icon,
+.nav-btn.active .nav-lbl { color: var(--accent); }
+
+/* ---- SHARED COMPONENTS ---- */
+.section-hdr {
+  padding: 10px 14px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.room-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 0;
+}
+
+.room-list-item:active { background: rgba(124,92,252,0.08); }
+
+.room-ball-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rli-info { flex: 1; overflow: hidden; }
+.rli-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.rli-preview {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+.rli-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.rli-time { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+
+.edit-btn {
+  background: rgba(124,92,252,0.12);
+  border: 1px solid rgba(124,92,252,0.25);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 10px;
+  padding: 3px 9px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.edit-btn:hover { background: rgba(124,92,252,0.22); }
+
+/* ---- HOME ---- */
+.home-hero {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-stats { display: flex; gap: 8px; }
+
+.stat-pill {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stat-num { font-size: 15px; font-weight: 700; color: var(--accent); }
+.stat-lbl { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+.quick-btns { display: flex; gap: 8px; }
+
+.qbtn {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.qbtn:hover { opacity: 0.85; }
+.qbtn-live { background: linear-gradient(135deg, #e03c3c, #fc5c7d); color: #fff; }
+.qbtn-main { background: linear-gradient(135deg, var(--accent), #5c9dfc); color: #fff; }
+
+/* ---- LIVE ---- */
+.screen-top-bar {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.screen-title { font-size: 14px; font-weight: 700; color: var(--text); }
+
+.live-count-badge {
+  background: rgba(224,60,60,0.15);
+  color: #e03c3c;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.live-card {
+  margin: 8px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.live-card:hover { transform: translateY(-2px); }
+
+.live-thumb {
+  height: 110px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  background: #e03c3c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.live-viewers {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+
+.live-emoji { font-size: 32px; }
+
+.live-info { padding: 8px 12px 10px; }
+.live-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.live-game {
+  display: inline-flex;
+  background: rgba(124,92,252,0.12);
+  color: #a990ff;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(124,92,252,0.2);
+  margin-top: 5px;
+}
+
+/* ---- STORIES ---- */
+.story-row {
+  display: flex;
+  overflow-x: auto;
+  padding: 8px 12px 12px;
+  border-bottom: 1px solid var(--border);
+  gap: 0;
+  scrollbar-width: none;
+}
+
+.story-row::-webkit-scrollbar { display: none; }
+
+.story-itm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0 7px;
+  flex-shrink: 0;
+}
+
+.s-ring {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  padding: 2.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+}
+
+.s-ring-in {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+.s-av {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.s-name {
+  font-size: 10px;
+  color: var(--muted);
+  max-width: 54px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-itm {
+  margin: 0 12px 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.note-hdr {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+
+.note-av {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.note-nm { font-size: 12px; font-weight: 700; color: var(--text); }
+.note-tm { font-size: 10px; color: var(--muted); margin-left: auto; }
+.note-txt { font-size: 12px; color: #c8c4e0; line-height: 1.5; }
+
+/* ---- CHAT ---- */
+.chat-header {
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.back-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(124,92,252,0.12);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.chat-room-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.chat-room-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.chat-room-sub  { font-size: 11px; color: var(--muted); }
+
+.chat-hdr-right {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: rgba(124,92,252,0.1);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Main Room banner */
+.main-room-banner {
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(92,240,196,0.15);
+  background: linear-gradient(135deg, rgba(92,240,196,0.06), rgba(124,92,252,0.08));
+  flex-shrink: 0;
+}
+
+.mr-pulse {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--accent3);
+  flex-shrink: 0;
+  animation: mrpulse 2s infinite;
+}
+
+@keyframes mrpulse {
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(92,240,196,0.4); }
+  50%      { opacity:0.7; box-shadow: 0 0 0 6px rgba(92,240,196,0); }
+}
+
+.mr-title { font-size: 12px; font-weight: 700; color: var(--accent3); }
+.mr-sub   { font-size: 10px; color: var(--muted); }
+
+/* Messages */
+.msgs-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.msgs-area::-webkit-scrollbar { width: 2px; }
+
+.empty-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 30px 20px;
+}
+
+.empty-icon  { font-size: 36px; }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--text); text-align: center; }
+.empty-sub   { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
+
+.ad-strip {
+  background: rgba(124,92,252,0.06);
+  border: 1px solid rgba(124,92,252,0.15);
+  border-radius: 8px;
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.ad-lbl {
+  background: var(--accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.msg-row {
+  display: flex;
+  gap: 7px;
+  align-items: flex-end;
+}
+
+.msg-row.own { flex-direction: row-reverse; }
+
+.msg-av {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.msg-body { max-width: 75%; }
+
+.msg-sender {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.msg-row.own .msg-sender { text-align: right; color: var(--accent2); }
+
+.bubble {
+  background: var(--surface3);
+  border: 1px solid rgba(124,92,252,0.15);
+  border-radius: 4px 12px 12px 12px;
+  padding: 7px 11px;
+  font-size: 12px;
+  color: #e8e4ff;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.bubble.own {
+  background: rgba(124,92,252,0.2);
+  border-color: rgba(124,92,252,0.35);
+  border-radius: 12px 4px 12px 12px;
+}
+
+.msg-time { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.msg-row.own .msg-time { text-align: right; }
+
+.media-bubble {
+  background: var(--surface3);
+  border: 1px solid rgba(124,92,252,0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.media-preview {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.media-cap { padding: 6px 10px; font-size: 11px; color: var(--muted); }
+
+/* Cooldown */
+.cooldown-wrap {
+  padding: 6px 14px;
+  border-top: 1px solid rgba(124,92,252,0.1);
+  flex-shrink: 0;
+}
+
+.cd-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cd-lbl { font-size: 10px; color: var(--muted); flex-shrink: 0; min-width: 50px; }
+
+.cd-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cd-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent3));
+  border-radius: 2px;
+  transition: width 1s linear;
+}
+
+/* Input row */
+.chat-input-row {
+  padding: 8px 12px 10px;
+  border-top: 1px solid rgba(124,92,252,0.1);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.chat-inp {
+  flex: 1;
+  background: var(--surface3);
+  border: 1px solid rgba(124,92,252,0.2);
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+
+.chat-inp:focus { border-color: var(--accent); }
+.chat-inp::placeholder { color: var(--muted); }
+
+.send-b {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.send-b:hover { background: #6a4ae0; }
+.send-b:disabled { background: #2a2a40; cursor: not-allowed; }
+
+.attach-b {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--surface3);
+  border: 1px solid rgba(124,92,252,0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ---- STORY OVERLAY ---- */
+.story-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.story-overlay.hidden { display: none; }
+
+.sv-prog {
+  display: flex;
+  gap: 3px;
+  padding: 10px 12px 6px;
+  flex-shrink: 0;
+}
+
+.sv-pbar {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sv-pfill {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.sv-user-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 10px;
+  flex-shrink: 0;
+}
+
+.sv-name-txt { font-size: 13px; font-weight: 700; color: #fff; }
+
+.sv-close {
+  margin-left: auto;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  width: 26px; height: 26px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sv-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+}
+
+.sv-emoji { font-size: 54px; }
+
+.sv-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ---- CUSTOMIZE MODAL ---- */
+.customize-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.customize-modal.hidden { display: none; }
+
+.customize-sheet {
+  background: var(--surface2);
+  border-radius: 24px 24px 0 0;
+  padding: 16px;
+  border-top: 1px solid rgba(124,92,252,0.3);
+}
+
+.sheet-handle {
+  width: 36px; height: 3px;
+  background: #2a2a40;
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+
+.sheet-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+
+.sheet-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.color-swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.swatch {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.swatch.selected { border-color: #fff; transform: scale(1.1); }
+
+.emoji-picker {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.ep-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--surface3);
+  border: 1px solid rgba(124,92,252,0.2);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ep-btn.selected {
+  border-color: var(--accent);
+  background: rgba(124,92,252,0.2);
+}
+
+.sheet-btns { display: flex; gap: 8px; }
+
+.sheet-btn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.sheet-btn:hover { opacity: 0.85; }
+.sheet-btn-cancel { background: var(--surface3); color: #a08aff; border: 1px solid rgba(124,92,252,0.3); }
+.sheet-btn-save   { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+
+/* ---- CREATE ROOM BUTTON ---- */
+.create-room-btn {
+  width: 100%;
+  padding: 10px;
+  background: rgba(124,92,252,0.1);
+  border: 1px dashed rgba(124,92,252,0.3);
+  border-radius: 12px;
+  color: var(--accent);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.create-room-btn:hover { background: rgba(124,92,252,0.18); }
+
+/* ---- FLOATING ROOM BUBBLES ---- */
+.floating-rooms {
+  position: absolute;
+  right: 14px;
+  bottom: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 40;
+}
+
+.float-ball {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
+  border: 2px solid rgba(255,255,255,0.12);
+  position: relative;
+}
+
+.float-ball:hover { transform: scale(1.12); }
+
+.float-notif {
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 16px; height: 16px;
+  background: var(--accent2);
+  border-radius: 50%;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface);
+  font-weight: 700;
+  color: #fff;
+}
+
+.float-tooltip {
+  position: absolute;
+  right: 54px;
+  background: var(--surface3);
+  color: var(--text);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.float-ball:hover .float-tooltip { opacity: 1; }
+
+
+/* ===== MOBILE & PWA ENHANCEMENTS ===== */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  overscroll-behavior: none;
+  height: -webkit-fill-available;
+}
+
+#app {
+  height: 100vh;
+  height: -webkit-fill-available;
+}
+
+.status-bar {
+  padding-top: max(var(--safe-top), 4px);
+}
+
+.bottom-nav {
+  padding-bottom: max(var(--safe-bot), 4px);
+}
+
+/* Better signal bars */
+.sig-dot { display: none; }
+.sig-bar { width: 3px; border-radius: 1px !important; }
+.sig-bar:nth-child(1) { height: 5px; }
+.sig-bar:nth-child(2) { height: 8px; }
+.sig-bar:nth-child(3) { height: 11px; }
+
+/* Typing indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 8px;
+  font-size: 10.5px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.typing-dots span {
+  width: 5px; height: 5px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: typing-bounce 1.2s ease infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Nav badge */
+.nav-badge {
+  position: absolute;
+  top: 4px; right: 10px;
+  min-width: 15px; height: 15px;
+  background: var(--accent2);
+  border-radius: 8px;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border: 1.5px solid var(--surface);
+}
+
+.nav-btn { position: relative; }
+
+/* Notification dot on header */
+.hdr-notif-btn {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  position: relative;
+  transition: background 0.15s;
+}
+.hdr-notif-dot {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 7px; height: 7px;
+  background: var(--accent2);
+  border-radius: 50%;
+  border: 1.5px solid var(--surface);
+}
+
+/* Search bar */
+.search-bar {
+  margin: 10px 14px;
+  padding: 9px 14px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.search-bar:focus-within { border-color: var(--accent); }
+.search-icon { font-size: 14px; }
+.search-inp {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 12.5px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+}
+.search-inp::placeholder { color: var(--muted); }
+
+/* Header right area */
+.hdr-right { display: flex; align-items: center; gap: 8px; }
+
+/* Avatar ring */
+.hdr-av { box-shadow: 0 0 0 1.5px var(--accent) !important; }
+
+/* Live grid */
+.live-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px;
+}
+
+/* Online pill */
+.online-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(92,240,196,0.08);
+  border: 1px solid rgba(92,240,196,0.2);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent3);
+  margin: 0 16px 8px;
+}
+.online-pill-dot {
+  width: 6px; height: 6px;
+  background: var(--accent3);
+  border-radius: 50%;
+  animation: pulse-ring 1.8s ease infinite;
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(92,240,196,0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(92,240,196,0); }
+  100% { box-shadow: 0 0 0 0 rgba(92,240,196,0); }
+}
+
+/* Section header row */
+.section-hdr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 8px;
+}
+.section-hdr-row .section-hdr { padding: 0; }
+.see-all { font-size: 11px; font-weight: 600; color: var(--accent); cursor: pointer; }
+
+/* Greeting */
+.home-greeting {
+  font-size: 13px;
+  color: var(--text2, #b8b0e0);
+  margin-bottom: 10px;
+}
+.home-greeting strong { color: var(--text); font-weight: 700; }
+
+/* Icon btn */
+.icon-btn {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+.icon-btn:hover { background: var(--surface4); }
+
+</style>
+    <meta name="theme-color" content="#0a0a0f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Rety" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="status-time" id="status-time">9:41</span>
+    <div class="status-icons">
+      <span class="sig-dot"></span>
+      <span class="sig-bar"></span>
+      <span class="sig-bar"></span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-row">
+      <svg class="logo-svg" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7c5cfc"/>
+            <stop offset="50%" stop-color="#fc5c7d"/>
+            <stop offset="100%" stop-color="#5cf0c4"/>
+          </linearGradient>
+        </defs>
+        <path d="M14 2L24 7.5L24 20.5L14 26L4 20.5L4 7.5Z"
+              fill="none" stroke="url(#lg)" stroke-width="1.5" opacity="0.7"/>
+        <path d="M9 20L9 8L17 8Q21 8 21 12Q21 15 17.5 15.5L21 20"
+              fill="none" stroke="url(#lg)" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="14" cy="12.5" r="1.8" fill="url(#lg)"/>
+      </svg>
+      <span class="logo-txt">Rety</span>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-notif-btn" onclick="alert('Notifications coming soon!')">🔔<div class="hdr-notif-dot"></div></div>
+      <div class="hdr-av" id="profile-av">YO</div>
+    </div>
+  </div>
+
+  <!-- SCREENS CONTAINER -->
+  <div class="screens" id="screens">
+
+    <!-- HOME SCREEN -->
+    <div class="screen active" id="s-home">
+      <div class="scroll-area">
+        <div class="home-hero">
+          <div class="home-greeting">Good evening, <strong>YO</strong> 👾</div>
+          <div class="home-stats">
+            <div class="stat-pill">
+              <div class="stat-num">18.4K</div>
+              <div class="stat-lbl">Online now</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-num">42</div>
+              <div class="stat-lbl">Lives</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-num">5</div>
+              <div class="stat-lbl">Your rooms</div>
+            </div>
+          </div>
+          <div class="quick-btns">
+            <button class="qbtn qbtn-live" onclick="nav('live')">Watch Live</button>
+            <button class="qbtn qbtn-main" onclick="openRoom('main-room')">Main Room</button>
+          </div>
+        </div>
+        <div class="online-pill"><div class="online-pill-dot"></div>18,492 people online right now</div>
+
+        <div class="section-hdr-row"><span class="section-hdr">Recent rooms</span><span class="see-all" onclick="nav('rooms')">See all</span></div>
+        <div class="room-list-item" onclick="openRoom('main-room')">
+          <div class="room-ball-icon" style="background:linear-gradient(135deg,#5cf0c4,#7c5cfc)">M</div>
+          <div class="rli-info">
+            <div class="rli-name">Main Room</div>
+            <div class="rli-preview">18,492 online · text only</div>
+          </div>
+          <div class="rli-badge" style="background:#5cf0c4;color:#0a0a0f;">●</div>
+        </div>
+        <div class="room-list-item" onclick="openRoom('gg')">
+          <div class="room-ball-icon" id="icon-gg" style="background:linear-gradient(135deg,#fc5c7d,#fc9d5c)">GG</div>
+          <div class="rli-info">
+            <div class="rli-name">GG Gaming</div>
+            <div class="rli-preview" id="prev-gg">insane 1v5 clip dropped</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+            <span class="rli-time">2m</span>
+            <span class="rli-badge">3</span>
+          </div>
+        </div>
+        <div class="room-list-item" onclick="openRoom('fc')">
+          <div class="room-ball-icon" id="icon-fc" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc);color:#13131c">FC</div>
+          <div class="rli-info">
+            <div class="rli-name">Football Club</div>
+            <div class="rli-preview" id="prev-fc">match tonight!</div>
+          </div>
+          <span class="rli-time">18m</span>
+        </div>
+        <div class="room-list-item" onclick="openRoom('art')">
+          <div class="room-ball-icon" id="icon-art" style="background:linear-gradient(135deg,#fcd15c,#fc5c7d)">ART</div>
+          <div class="rli-info">
+            <div class="rli-name">Art Vibes</div>
+            <div class="rli-preview" id="prev-art">Tap to start the conversation</div>
+          </div>
+          <span class="rli-badge">!</span>
+        </div>
+        <div class="room-list-item" onclick="openRoom('dev')">
+          <div class="room-ball-icon" id="icon-dev" style="background:linear-gradient(135deg,#c45cfc,#7c5cfc)">DEV</div>
+          <div class="rli-info">
+            <div class="rli-name">Dev Zone</div>
+            <div class="rli-preview" id="prev-dev">anyone use React?</div>
+          </div>
+          <span class="rli-time">1h</span>
+        </div>
+
+        <div class="section-hdr">Stories</div>
+        <div class="story-row">
+          <div class="story-itm">
+            <div class="s-ring" style="background:linear-gradient(135deg,#7c5cfc,#fc5c7d)">
+              <div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#7c5cfc,#fc5c7d);color:#fff;font-size:20px">+</div></div>
+            </div>
+            <div class="s-name">Add</div>
+          </div>
+          <div class="story-itm" onclick="openStory(0)">
+            <div class="s-ring"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#fc5c7d,#fcd15c);color:#fff">NX</div></div></div>
+            <div class="s-name">NightX</div>
+          </div>
+          <div class="story-itm" onclick="openStory(1)">
+            <div class="s-ring" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc)"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc);color:#13131c">AZ</div></div></div>
+            <div class="s-name">Azure</div>
+          </div>
+          <div class="story-itm" onclick="openStory(2)">
+            <div class="s-ring" style="background:linear-gradient(135deg,#c45cfc,#7c5cfc)"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#c45cfc,#7c5cfc);color:#fff">SR</div></div></div>
+            <div class="s-name">Sky</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE SCREEN -->
+    <div class="screen hidden" id="s-live">
+      <div class="screen-top-bar">
+        <span class="screen-title">Gaming Lives</span>
+        <span class="live-count-badge">42 LIVE</span>
+      </div>
+      <div class="scroll-area">
+        <div class="live-grid">
+        <div class="live-card" onclick="alert('Stream opening — connect a real streaming API here!')">
+          <div class="live-thumb" style="background:linear-gradient(135deg,#1a0533,#2d1060)">
+            <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+            <div class="live-viewers">24.3K</div>
+            <span class="live-emoji">⚔️</span>
+          </div>
+          <div class="live-info">
+            <div class="live-name">NightX_Gaming — Ranked Grind</div>
+            <div class="live-game">League of Legends</div>
+          </div>
+        </div>
+        <div class="live-card">
+          <div class="live-thumb" style="background:linear-gradient(135deg,#052220,#0a3d25)">
+            <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+            <div class="live-viewers">8.1K</div>
+            <span class="live-emoji">🏆</span>
+          </div>
+          <div class="live-info">
+            <div class="live-name">AzurePro — World Cup Finals</div>
+            <div class="live-game">Valorant</div>
+          </div>
+        </div>
+        <div class="live-card">
+          <div class="live-thumb" style="background:linear-gradient(135deg,#2d0a1a,#4a1030)">
+            <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+            <div class="live-viewers">15.7K</div>
+            <span class="live-emoji">🎯</span>
+          </div>
+          <div class="live-info">
+            <div class="live-name">SkyRaider — 1v1 Challenges</div>
+            <div class="live-game">Fortnite</div>
+          </div>
+        </div>
+        <div class="live-card">
+          <div class="live-thumb" style="background:linear-gradient(135deg,#0a0d2d,#1a2060)">
+            <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+            <div class="live-viewers">3.2K</div>
+            <span class="live-emoji">🕹️</span>
+          </div>
+          <div class="live-info">
+            <div class="live-name">VortexPlay — Speedrun Attempt</div>
+            <div class="live-game">Minecraft</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROOMS SCREEN -->
+    <div class="screen hidden" id="s-rooms">
+      <div class="scroll-area">
+        <div class="search-bar"><span class="search-icon">🔍</span><input class="search-inp" placeholder="Search rooms…" /></div>
+        <div class="section-hdr">Your rooms</div>
+        <div class="room-list-item" onclick="openRoom('main-room')">
+          <div class="room-ball-icon" style="background:linear-gradient(135deg,#5cf0c4,#7c5cfc)">M</div>
+          <div class="rli-info">
+            <div class="rli-name">Main Room</div>
+            <div class="rli-preview">18,492 online · text only · 30s cooldown</div>
+          </div>
+          <span class="rli-badge" style="background:#5cf0c4;color:#0a0a0f;">●</span>
+        </div>
+        <div class="room-list-item" onclick="openRoom('gg')">
+          <div class="room-ball-icon" id="icon-gg2" style="background:linear-gradient(135deg,#fc5c7d,#fc9d5c)">GG</div>
+          <div class="rli-info">
+            <div class="rli-name">GG Gaming</div>
+            <div class="rli-preview">128 members</div>
+          </div>
+          <button class="edit-btn" onclick="event.stopPropagation();openCustomize('gg')">Edit</button>
+          <span class="rli-badge">3</span>
+        </div>
+        <div class="room-list-item" onclick="openRoom('fc')">
+          <div class="room-ball-icon" id="icon-fc2" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc);color:#13131c">FC</div>
+          <div class="rli-info">
+            <div class="rli-name">Football Club</div>
+            <div class="rli-preview">64 members</div>
+          </div>
+          <button class="edit-btn" onclick="event.stopPropagation();openCustomize('fc')">Edit</button>
+        </div>
+        <div class="room-list-item" onclick="openRoom('art')">
+          <div class="room-ball-icon" id="icon-art2" style="background:linear-gradient(135deg,#fcd15c,#fc5c7d)">ART</div>
+          <div class="rli-info">
+            <div class="rli-name">Art Vibes</div>
+            <div class="rli-preview">22 members · new!</div>
+          </div>
+          <button class="edit-btn" onclick="event.stopPropagation();openCustomize('art')">Edit</button>
+        </div>
+        <div class="room-list-item" onclick="openRoom('dev')">
+          <div class="room-ball-icon" id="icon-dev2" style="background:linear-gradient(135deg,#c45cfc,#7c5cfc)">DEV</div>
+          <div class="rli-info">
+            <div class="rli-name">Dev Zone</div>
+            <div class="rli-preview">91 members</div>
+          </div>
+          <button class="edit-btn" onclick="event.stopPropagation();openCustomize('dev')">Edit</button>
+        </div>
+        <div style="padding:12px 14px;">
+          <button class="create-room-btn">+ Create or join a room</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORIES SCREEN -->
+    <div class="screen hidden" id="s-stories">
+      <div class="scroll-area">
+        <div class="section-hdr">Stories</div>
+        <div class="story-row">
+          <div class="story-itm">
+            <div class="s-ring" style="background:linear-gradient(135deg,#7c5cfc,#fc5c7d)">
+              <div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#7c5cfc,#fc5c7d);color:#fff;font-size:20px">+</div></div>
+            </div>
+            <div class="s-name">Add</div>
+          </div>
+          <div class="story-itm" onclick="openStory(0)">
+            <div class="s-ring"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#fc5c7d,#fcd15c);color:#fff">NX</div></div></div>
+            <div class="s-name">NightX</div>
+          </div>
+          <div class="story-itm" onclick="openStory(1)">
+            <div class="s-ring" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc)"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc);color:#13131c">AZ</div></div></div>
+            <div class="s-name">Azure</div>
+          </div>
+          <div class="story-itm" onclick="openStory(2)">
+            <div class="s-ring" style="background:linear-gradient(135deg,#c45cfc,#7c5cfc)"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#c45cfc,#7c5cfc);color:#fff">SR</div></div></div>
+            <div class="s-name">Sky</div>
+          </div>
+          <div class="story-itm" onclick="openStory(3)">
+            <div class="s-ring" style="background:linear-gradient(135deg,#fcd15c,#fc5c7d)"><div class="s-ring-in"><div class="s-av" style="background:linear-gradient(135deg,#fcd15c,#fc5c7d);color:#fff">VX</div></div></div>
+            <div class="s-name">Vortex</div>
+          </div>
+        </div>
+        <div class="section-hdr">Notes</div>
+        <div class="note-itm">
+          <div class="note-hdr">
+            <div class="note-av" style="background:linear-gradient(135deg,#fc5c7d,#fcd15c);color:#fff">NX</div>
+            <div class="note-nm">NightX_Gaming</div>
+            <div class="note-tm">3m</div>
+          </div>
+          <div class="note-txt">Grind never stops — new PB incoming today</div>
+        </div>
+        <div class="note-itm">
+          <div class="note-hdr">
+            <div class="note-av" style="background:linear-gradient(135deg,#5cf0c4,#5cbffc);color:#13131c">AZ</div>
+            <div class="note-nm">AzurePro</div>
+            <div class="note-tm">11m</div>
+          </div>
+          <div class="note-txt">Anyone else loving the Rety main room vibe?</div>
+        </div>
+        <div class="note-itm">
+          <div class="note-hdr">
+            <div class="note-av" style="background:linear-gradient(135deg,#fcd15c,#fc5c7d);color:#fff">KR</div>
+            <div class="note-nm">KiraRex</div>
+            <div class="note-tm">28m</div>
+          </div>
+          <div class="note-txt">studies are killing me but at least Rety exists</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT SCREEN -->
+    <div class="screen hidden" id="s-chat">
+      <div class="chat-header">
+        <button class="back-btn" onclick="backFromChat()">&#8592;</button>
+        <div class="chat-room-icon" id="chat-icon">GG</div>
+        <div>
+          <div class="chat-room-name" id="chat-name">GG Gaming</div>
+          <div class="chat-room-sub" id="chat-sub">128 members</div>
+        </div>
+        <div class="chat-hdr-right">
+          <button class="icon-btn" id="chat-search-btn">🔍</button>
+          <button class="icon-btn" id="chat-customize-btn" onclick="openCustomizeFromChat()">🎨</button>
+        </div>
+      </div>
+
+      <!-- Main Room special banner -->
+      <div id="main-room-banner" class="main-room-banner" style="display:none">
+        <div class="mr-pulse"></div>
+        <div class="mr-info">
+          <div class="mr-title">Main Room</div>
+          <div class="mr-sub">18,492 online · everyone is here · text only</div>
+        </div>
+      </div>
+
+      <div class="msgs-area" id="msgs-area"></div>
+
+      <!-- Cooldown bar (Main Room only) -->
+      <div id="cooldown-section" style="display:none" class="cooldown-wrap">
+        <div class="cd-row">
+          <span class="cd-lbl" id="cd-lbl">Ready</span>
+          <div class="cd-bar"><div class="cd-fill" id="cd-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+
+
+      <div id="typing-wrap" style="display:none">
+        <div class="typing-indicator">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          <span id="typing-name">Someone is typing…</span>
+        </div>
+      </div>
+      <div class="chat-input-row" id="chat-input-row">
+        <span id="attach-wrap"></span>
+        <input class="chat-inp" id="chat-inp" placeholder="Message…" />
+        <button class="send-b" id="send-btn" onclick="sendChatMsg()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- STORY VIEWER OVERLAY -->
+  <div class="story-overlay hidden" id="story-overlay">
+    <div class="sv-prog" id="sv-prog"></div>
+    <div class="sv-user-row">
+      <div class="msg-av" id="sv-av"></div>
+      <span id="sv-name" class="sv-name-txt"></span>
+      <button class="sv-close" onclick="closeStory()">✕</button>
+    </div>
+    <div class="sv-content" id="sv-content"></div>
+  </div>
+
+  <!-- CUSTOMIZE MODAL -->
+  <div class="customize-modal hidden" id="customize-modal">
+    <div class="customize-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Customize room</div>
+      <div class="sheet-lbl">Icon color</div>
+      <div class="color-swatches" id="color-swatches"></div>
+      <div class="sheet-lbl">Room icon / label</div>
+      <div class="emoji-picker" id="emoji-picker"></div>
+      <div class="sheet-btns">
+        <button class="sheet-btn sheet-btn-cancel" onclick="closeCustomize()">Cancel</button>
+        <button class="sheet-btn sheet-btn-save" onclick="saveCustomize()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING ROOM BUBBLES -->
+  <div class="floating-rooms" id="floating-rooms">
+    <div class="float-ball" style="background:linear-gradient(135deg,#fc5c7d,#fc9d5c)" onclick="openRoom('gg')">
+      GG
+      <div class="float-notif">3</div>
+      <div class="float-tooltip">GG Gaming</div>
+    </div>
+    <div class="float-ball" style="background:linear-gradient(135deg,#fcd15c,#fc5c7d)" onclick="openRoom('art')">
+      ART
+      <div class="float-notif">!</div>
+      <div class="float-tooltip">Art Vibes</div>
+    </div>
+    <div class="float-ball" style="background:linear-gradient(135deg,#5cf0c4,#7c5cfc);color:#0a0a0f" onclick="openRoom('dev')">
+      DEV
+      <div class="float-tooltip">Dev Zone</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="nav('home')">
+      <span class="nav-icon">🏠</span><span class="nav-lbl">Home</span>
+    </button>
+    <button class="nav-btn" id="nav-live" onclick="nav('live')">
+      <span class="nav-icon">🎮</span><span class="nav-lbl">Live</span>
+    </button>
+    <button class="nav-btn" id="nav-rooms" onclick="nav('rooms')">
+      <span class="nav-icon">💬</span><span class="nav-lbl">Rooms</span><span class="nav-badge">3</span>
+    </button>
+    <button class="nav-btn" id="nav-stories" onclick="nav('stories')">
+      <span class="nav-icon">📖</span><span class="nav-lbl">Stories</span>
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ================================================
+   RETY — app.js
+   All app logic lives here.
+   ================================================ */
+
+/* ---- ROOM DATA ----
+   Add or edit rooms here.
+   messages[] holds the chat history for each room.
+   isMain: true  → Main Room (text only, 30s cooldown, no media)
+   hasMedia: true → Group room (GIFs, reels, links allowed)
+-------------------------------------------------- */
+const ROOMS = {
+  'main-room': {
+    name: 'Main Room',
+    sub: '18,492 online',
+    icon: 'M',
+    iconBg: 'linear-gradient(135deg,#5cf0c4,#7c5cfc)',
+    iconColor: '#fff',
+    isMain: true,
+    hasMedia: false,
+    messages: [
+      { av:'AX', avBg:'linear-gradient(135deg,#7c5cfc,#5c9dfc)', name:'AxelDrift',
+        text:'anyone watching the Valorant tournament rn?', time:'2:41 PM', own:false },
+      { av:'LS', avBg:'linear-gradient(135deg,#5cf0c4,#5cbffc)', avColor:'#13131c', name:'luna.says',
+        text:'just joined Rety today and this main room is actually chill', time:'2:42 PM', own:false },
+      { av:'YO', avBg:'linear-gradient(135deg,#7c5cfc,#fc5c7d)', name:'You',
+        text:'yeah the 30s cooldown keeps it readable', time:'2:43 PM', own:true },
+      { av:'KR', avBg:'linear-gradient(135deg,#fc5c7d,#fcd15c)', name:'KiraRex',
+        text:'the gaming lives section is fire, best feature so far', time:'2:44 PM', own:false },
+    ]
+  },
+  'gg': {
+    name: 'GG Gaming',
+    sub: '128 members · reels & GIFs allowed · 2 ads/12h',
+    icon: 'GG',
+    iconBg: 'linear-gradient(135deg,#fc5c7d,#fc9d5c)',
+    iconColor: '#fff',
+    isMain: false,
+    hasMedia: true,
+    messages: [
+      { av:'AX', avBg:'linear-gradient(135deg,#7c5cfc,#5c9dfc)', name:'AxelDrift',
+        media:true, mediaBg:'linear-gradient(135deg,#1a0533,#2d1060)', mediaEmoji:'🎬',
+        mediaText:'insane 1v5 clutch clip', time:'1:20 PM', own:false },
+      { av:'KR', avBg:'linear-gradient(135deg,#fc5c7d,#fcd15c)', name:'KiraRex',
+        text:'bro that clip was INSANE how did you do that', time:'1:21 PM', own:false },
+      { av:'AZ', avBg:'linear-gradient(135deg,#5cf0c4,#5cbffc)', avColor:'#13131c', name:'AzurePro',
+        media:true, mediaBg:'linear-gradient(135deg,#052220,#0a3d25)', mediaEmoji:'😂',
+        mediaText:'reaction GIF', time:'1:22 PM', own:false },
+      { av:'YO', avBg:'linear-gradient(135deg,#7c5cfc,#fc5c7d)', name:'You',
+        text:'good game everyone lets run it again', time:'1:23 PM', own:true },
+    ]
+  },
+  'fc': {
+    name: 'Football Club',
+    sub: '64 members · reels & GIFs allowed',
+    icon: 'FC',
+    iconBg: 'linear-gradient(135deg,#5cf0c4,#5cbffc)',
+    iconColor: '#13131c',
+    isMain: false,
+    hasMedia: true,
+    messages: [
+      { av:'NX', avBg:'linear-gradient(135deg,#fc5c7d,#fcd15c)', name:'NightX',
+        text:'who is watching the match tonight?', time:'11:00 AM', own:false },
+      { av:'SR', avBg:'linear-gradient(135deg,#c45cfc,#7c5cfc)', name:'SkyRaider',
+        text:'me! hoping for a clean win', time:'11:03 AM', own:false },
+    ]
+  },
+  'art': {
+    name: 'Art Vibes',
+    sub: '22 members · new room!',
+    icon: 'ART',
+    iconBg: 'linear-gradient(135deg,#fcd15c,#fc5c7d)',
+    iconColor: '#fff',
+    isMain: false,
+    hasMedia: true,
+    messages: []   // empty → shows "Be the first" screen
+  },
+  'dev': {
+    name: 'Dev Zone',
+    sub: '91 members · reels & links allowed',
+    icon: 'DEV',
+    iconBg: 'linear-gradient(135deg,#c45cfc,#7c5cfc)',
+    iconColor: '#fff',
+    isMain: false,
+    hasMedia: true,
+    messages: [
+      { av:'VX', avBg:'linear-gradient(135deg,#c45cfc,#7c5cfc)', name:'VortexPlay',
+        text:'anyone here use React for their projects?', time:'10:00 AM', own:false },
+      { av:'AZ', avBg:'linear-gradient(135deg,#5cf0c4,#5cbffc)', avColor:'#13131c', name:'AzurePro',
+        text:'yeah React + Tailwind, best combo imo', time:'10:04 AM', own:false },
+    ]
+  }
+};
+
+/* ---- CUSTOMIZE OPTIONS ---- */
+const ROOM_COLORS = [
+  'linear-gradient(135deg,#7c5cfc,#fc5c7d)',
+  'linear-gradient(135deg,#fc5c7d,#fc9d5c)',
+  'linear-gradient(135deg,#5cf0c4,#5cbffc)',
+  'linear-gradient(135deg,#fcd15c,#fc5c7d)',
+  'linear-gradient(135deg,#c45cfc,#7c5cfc)',
+  'linear-gradient(135deg,#5cf0c4,#7c5cfc)',
+  'linear-gradient(135deg,#e03c3c,#fc5c7d)',
+  'linear-gradient(135deg,#5c9dfc,#7c5cfc)',
+];
+
+const ROOM_ICONS = ['GG','FC','ART','DEV','MUS','SPT','FIT','💻','🎮','⚽','🎨','🎵','🔥','👾','🏆','🚀'];
+
+/* ---- STORY DATA ---- */
+const STORIES = [
+  { user:'NX', name:'NightX_Gaming', avBg:'linear-gradient(135deg,#fc5c7d,#fcd15c)', avColor:'#fff',
+    bg:'linear-gradient(160deg,#1a0533,#2d1060)', emoji:'⚔️', text:'Late night ranked grind. Diamond or bust.' },
+  { user:'AZ', name:'AzurePro', avBg:'linear-gradient(135deg,#5cf0c4,#5cbffc)', avColor:'#13131c',
+    bg:'linear-gradient(160deg,#052220,#0a3d25)', emoji:'🏆', text:'Finals day. Locked in. Lets run it.' },
+  { user:'SR', name:'SkyRaider', avBg:'linear-gradient(135deg,#c45cfc,#7c5cfc)', avColor:'#fff',
+    bg:'linear-gradient(160deg,#2d0a1a,#4a1030)', emoji:'🎯', text:'1v1 me if you are brave enough.' },
+  { user:'VX', name:'VortexPlay', avBg:'linear-gradient(135deg,#fcd15c,#fc5c7d)', avColor:'#fff',
+    bg:'linear-gradient(160deg,#0a0d2d,#1a2060)', emoji:'🕹️', text:'New speedrun clip. Watch before I delete it.' },
+];
+
+
+/* ---- BOT REPLIES ---- */
+const BOT_REPLIES = {
+  'main-room': [
+    { av:'AX', avBg:'linear-gradient(135deg,#7c5cfc,#5c9dfc)', name:'AxelDrift', text:'fr fr this place is always popping 🔥' },
+    { av:'LS', avBg:'linear-gradient(135deg,#5cf0c4,#5cbffc)', avColor:'#13131c', name:'luna.says', text:'welcome to the main room, enjoy the chaos 😂' },
+    { av:'KR', avBg:'linear-gradient(135deg,#fc5c7d,#fcd15c)', name:'KiraRex', text:'drop a 🔥 if you\'re here for gaming' },
+    { av:'MX', avBg:'linear-gradient(135deg,#c45cfc,#5c9dfc)', name:'MaxWave', text:'real ones know Rety is the move' },
+  ],
+  'gg': [
+    { av:'AX', avBg:'linear-gradient(135deg,#7c5cfc,#5c9dfc)', name:'AxelDrift', text:'let\'s go! GG squad stays winning 🏆' },
+    { av:'KR', avBg:'linear-gradient(135deg,#fc5c7d,#fcd15c)', name:'KiraRex', text:'clutch plays only in this room 🎮' },
+    { av:'AZ', avBg:'linear-gradient(135deg,#5cf0c4,#5cbffc)', avColor:'#13131c', name:'AzurePro', text:'who\'s queueing up tonight?' },
+  ],
+};
+let typingTimer = null;
+
+function showTyping() {
+  const wrap = document.getElementById('typing-wrap');
+  if (!wrap) return;
+  const names = ['AxelDrift', 'KiraRex', 'AzurePro'];
+  document.getElementById('typing-name').textContent = names[Math.floor(Math.random()*names.length)] + ' is typing…';
+  wrap.style.display = 'block';
+  scrollToBottom();
+}
+
+function hideTyping() {
+  const wrap = document.getElementById('typing-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+/* ---- STATE ---- */
+let currentRoom  = null;
+let prevScreen   = 'home';
+let cdTimer      = null;
+let cdActive     = false;
+let customRoom   = null;
+let selColor     = null;
+let selIcon      = null;
+let storyIdx     = 0;
+let storyTimer   = null;
+
+/* ---- LIVE CLOCK ---- */
+function updateClock() {
+  const el = document.getElementById('status-time');
+  if (el) {
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  }
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+/* ================================================
+   NAVIGATION
+   ================================================ */
+function nav(tab) {
+  ['home','live','rooms','stories'].forEach(t => {
+    const s = document.getElementById('s-'+t);
+    if (!s) return;
+    s.classList.toggle('hidden', t !== tab);
+    s.classList.remove('slide-left');
+    const nb = document.getElementById('nav-'+t);
+    if (nb) nb.classList.toggle('active', t === tab);
+  });
+  const chat = document.getElementById('s-chat');
+  if (chat) chat.classList.add('hidden');
+}
+
+/* ================================================
+   ROOM / CHAT
+   ================================================ */
+function openRoom(roomId) {
+  const room = ROOMS[roomId];
+  if (!room) return;
+  currentRoom = roomId;
+
+  // Populate header
+  document.getElementById('chat-name').textContent = room.name;
+  document.getElementById('chat-sub').textContent  = room.sub;
+  const iconEl = document.getElementById('chat-icon');
+  iconEl.textContent   = room.icon;
+  iconEl.style.background = room.iconBg;
+  iconEl.style.color      = room.iconColor || '#fff';
+
+  // Main Room vs group room differences
+  document.getElementById('main-room-banner').style.display  = room.isMain ? 'flex' : 'none';
+  document.getElementById('cooldown-section').style.display  = room.isMain ? 'block' : 'none';
+  document.getElementById('chat-customize-btn').style.display = room.isMain ? 'none' : 'flex';
+
+  // Attach button (group rooms only)
+  const attachWrap = document.getElementById('attach-wrap');
+  if (room.hasMedia) {
+    attachWrap.innerHTML = `<button class="attach-b" onclick="addMedia()" title="Attach media / GIF">📎</button>`;
+  } else {
+    attachWrap.innerHTML = '';
+  }
+
+  const inp = document.getElementById('chat-inp');
+  inp.placeholder = room.isMain
+    ? 'Say something… (text only, 30s cooldown)'
+    : `Message ${room.name}…`;
+
+  renderMessages(room);
+
+  // Slide transition
+  ['home','live','rooms','stories'].forEach(t => {
+    const s = document.getElementById('s-'+t);
+    if (s && !s.classList.contains('hidden')) {
+      prevScreen = t;
+      s.classList.add('slide-left');
+      setTimeout(() => s.classList.add('hidden'), 280);
+    }
+  });
+
+  // Hide floats while in chat
+  const floats = document.getElementById('floating-rooms');
+  if (floats) floats.style.display = 'none';
+  document.getElementById('s-chat').classList.remove('hidden');
+  setTimeout(() => {
+    const area = document.getElementById('msgs-area');
+    if (area) area.scrollTop = area.scrollHeight;
+  }, 60);
+}
+
+function backFromChat() {
+  document.getElementById('s-chat').classList.add('hidden');
+  const prev = document.getElementById('s-' + prevScreen);
+  if (prev) {
+    prev.classList.remove('hidden', 'slide-left');
+  }
+  clearInterval(cdTimer);
+  clearTimeout(typingTimer);
+  cdActive = false;
+  currentRoom = null;
+  const tw = document.getElementById('typing-wrap');
+  if (tw) tw.style.display = 'none';
+  const floats = document.getElementById('floating-rooms');
+  if (floats) floats.style.display = 'flex';
+}
+
+function renderMessages(room) {
+  const area = document.getElementById('msgs-area');
+  area.innerHTML = '';
+
+  if (room.messages.length === 0) {
+    area.innerHTML = `
+      <div class="empty-chat">
+        <div class="empty-icon">💬</div>
+        <div class="empty-title">No messages yet</div>
+        <div class="empty-sub">Be the first to say something in ${room.name}!</div>
+      </div>`;
+    return;
+  }
+
+  // Ad banner
+  if (room.isMain) {
+    area.appendChild(makeAdStrip('AD', 'Level up your setup — Razer peripherals, 20% off.'));
+  } else if (room.hasMedia) {
+    area.appendChild(makeAdStrip('AD 1/2', 'MSI gaming monitors — ultra 240Hz. Shop now.'));
+  }
+
+  room.messages.forEach(m => area.appendChild(makeMsgEl(m)));
+}
+
+function makeAdStrip(label, text) {
+  const el = document.createElement('div');
+  el.className = 'ad-strip';
+  el.innerHTML = `<span class="ad-lbl">${label}</span><span>${text}</span>`;
+  return el;
+}
+
+function makeMsgEl(m) {
+  const row = document.createElement('div');
+  row.className = 'msg-row' + (m.own ? ' own' : '');
+  const avStyle = `style="background:${m.avBg};color:${m.avColor||'#fff'}"`;
+  let content;
+  if (m.media) {
+    content = `
+      <div class="msg-av" ${avStyle}>${m.av}</div>
+      <div class="msg-body">
+        <div class="msg-sender">${m.name}</div>
+        <div class="media-bubble">
+          <div class="media-preview" style="background:${m.mediaBg}">${m.mediaEmoji}</div>
+          <div class="media-cap">${m.mediaText}</div>
+        </div>
+        <div class="msg-time">${m.time}</div>
+      </div>`;
+  } else {
+    content = `
+      <div class="msg-av" ${avStyle}>${m.av}</div>
+      <div class="msg-body">
+        <div class="msg-sender">${m.name}</div>
+        <div class="bubble${m.own?' own':''}">${escHtml(m.text)}</div>
+        <div class="msg-time">${m.time}</div>
+      </div>`;
+  }
+  row.innerHTML = content;
+  return row;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function sendChatMsg() {
+  if (!currentRoom) return;
+  const room = ROOMS[currentRoom];
+  if (room.isMain && cdActive) return;
+  const inp = document.getElementById('chat-inp');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  room.messages.push({ av:'YO', avBg:'linear-gradient(135deg,#7c5cfc,#fc5c7d)', name:'You', text:txt, time, own:true });
+  inp.value = '';
+  renderMessages(room);
+  scrollToBottom();
+  if (room.isMain) startCooldown();
+
+  // Simulate a bot reply
+  const replies = BOT_REPLIES[currentRoom] || BOT_REPLIES['main-room'];
+  if (replies && Math.random() > 0.3) {
+    showTyping();
+    const delay = 1200 + Math.random() * 1400;
+    typingTimer = setTimeout(() => {
+      hideTyping();
+      const reply = replies[Math.floor(Math.random() * replies.length)];
+      const rtime = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+      room.messages.push({ ...reply, time: rtime, own: false });
+      renderMessages(room);
+      scrollToBottom();
+    }, delay);
+  }
+}
+
+document.getElementById('chat-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); sendChatMsg(); }
+});
+
+function addMedia() {
+  if (!currentRoom) return;
+  const room = ROOMS[currentRoom];
+  const emojis   = ['🎬','🎥','😂','🔥','🎯','👾','🎉'];
+  const bgs      = ['linear-gradient(135deg,#1a0533,#2d1060)','linear-gradient(135deg,#052220,#0a3d25)','linear-gradient(135deg,#2d0a1a,#4a1030)'];
+  const captions = ['shared a clip','sent a GIF','dropped a reel','shared media','shared a link'];
+  const em  = emojis[Math.floor(Math.random()*emojis.length)];
+  const bg  = bgs[Math.floor(Math.random()*bgs.length)];
+  const cap = captions[Math.floor(Math.random()*captions.length)];
+  const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  room.messages.push({ av:'YO', avBg:'linear-gradient(135deg,#7c5cfc,#fc5c7d)', name:'You',
+    media:true, mediaBg:bg, mediaEmoji:em, mediaText:cap, time, own:true });
+  renderMessages(room);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  const area = document.getElementById('msgs-area');
+  if (area) setTimeout(() => { area.scrollTop = area.scrollHeight; }, 30);
+}
+
+/* ---- COOLDOWN (Main Room, 30 seconds) ---- */
+function startCooldown() {
+  cdActive = true;
+  document.getElementById('send-btn').disabled = true;
+  let secs = 30;
+  const fill = document.getElementById('cd-fill');
+  const lbl  = document.getElementById('cd-lbl');
+  fill.style.width = '0%';
+  clearInterval(cdTimer);
+  cdTimer = setInterval(() => {
+    secs--;
+    fill.style.width = Math.round(((30 - secs) / 30) * 100) + '%';
+    lbl.textContent  = secs > 0 ? secs + 's cooldown' : 'Ready';
+    if (secs <= 0) {
+      clearInterval(cdTimer);
+      cdActive = false;
+      document.getElementById('send-btn').disabled = false;
+      fill.style.width = '100%';
+    }
+  }, 1000);
+}
+
+/* ================================================
+   ROOM CUSTOMIZATION
+   ================================================ */
+function openCustomize(roomId) {
+  customRoom = roomId;
+  const room = ROOMS[roomId];
+  selColor = room.iconBg;
+  selIcon  = room.icon;
+
+  // Color swatches
+  const sw = document.getElementById('color-swatches');
+  sw.innerHTML = ROOM_COLORS.map(c =>
+    `<div class="swatch${c === selColor ? ' selected' : ''}"
+          style="background:${c}"
+          onclick="selectColor('${c}',this)"></div>`
+  ).join('');
+
+  // Icon/emoji picker
+  const pk = document.getElementById('emoji-picker');
+  pk.innerHTML = ROOM_ICONS.map(e =>
+    `<button class="ep-btn${e === selIcon ? ' selected' : ''}"
+             onclick="selectIcon('${e}',this)">${e}</button>`
+  ).join('');
+
+  document.getElementById('customize-modal').classList.remove('hidden');
+}
+
+function openCustomizeFromChat() {
+  if (currentRoom && currentRoom !== 'main-room') openCustomize(currentRoom);
+}
+
+function selectColor(c, el) {
+  selColor = c;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectIcon(e, el) {
+  selIcon = e;
+  document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function saveCustomize() {
+  if (!customRoom) return;
+  const room = ROOMS[customRoom];
+  room.iconBg = selColor;
+  room.icon   = selIcon;
+
+  // Update all icon elements that reference this room
+  ['','2'].forEach(sfx => {
+    const el = document.getElementById('icon-' + customRoom + sfx);
+    if (el) { el.style.background = selColor; el.textContent = selIcon; }
+  });
+
+  // Update chat header if currently open
+  if (currentRoom === customRoom) {
+    const ci = document.getElementById('chat-icon');
+    ci.style.background = selColor;
+    ci.textContent = selIcon;
+  }
+
+  closeCustomize();
+}
+
+function closeCustomize() {
+  document.getElementById('customize-modal').classList.add('hidden');
+}
+
+/* ================================================
+   STORIES
+   ================================================ */
+function openStory(i) {
+  storyIdx = i;
+  document.getElementById('story-overlay').classList.remove('hidden');
+  renderStory();
+  clearInterval(storyTimer);
+  storyTimer = setInterval(() => {
+    storyIdx = (storyIdx + 1) % STORIES.length;
+    renderStory();
+  }, 4000);
+}
+
+function renderStory() {
+  const s = STORIES[storyIdx];
+
+  // Background + content
+  const content = document.getElementById('sv-content');
+  content.style.background = s.bg;
+  content.innerHTML = `<div class="sv-emoji">${s.emoji}</div><div class="sv-text">${s.text}</div>`;
+
+  // Avatar
+  const av = document.getElementById('sv-av');
+  av.style.background = s.avBg;
+  av.style.color       = s.avColor;
+  av.style.width       = '30px';
+  av.style.height      = '30px';
+  av.style.borderRadius = '50%';
+  av.style.fontSize    = '11px';
+  av.style.fontWeight  = '700';
+  av.textContent       = s.user;
+
+  document.getElementById('sv-name').textContent = s.name;
+
+  // Progress bars
+  const prog = document.getElementById('sv-prog');
+  prog.innerHTML = STORIES.map((_, j) =>
+    `<div class="sv-pbar"><div class="sv-pfill" style="width:${j < storyIdx ? 100 : j === storyIdx ? 55 : 0}%"></div></div>`
+  ).join('');
+}
+
+function closeStory() {
+  document.getElementById('story-overlay').classList.add('hidden');
+  clearInterval(storyTimer);
+}
+
+</script>
+</body>
+</html>
+
+<!-- Injected enhancements below -->
